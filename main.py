@@ -1,5 +1,29 @@
 import cv2 as cv
 
+def get_image_from_web():
+      cam = cv.VideoCapture(0)
+
+      cv.namedWindow("test")
+      img_name = "opencv_frame.png"
+
+      while True:
+            ret, frame = cam.read()
+            if not ret:
+                  print("failed to grab frame")
+                  break
+            cv.imshow("test", frame)
+
+            k = cv.waitKey(1)
+            if k%256 == 32:
+                  # SPACE pressed
+                  cv.imwrite(img_name, frame)
+                  print("{} written!".format(img_name))
+                  break
+
+      cam.release()
+
+      cv.destroyAllWindows()
+      return frame
 
 def viewImage(image, name_of_window="Image"):
       cv.namedWindow(name_of_window, cv.WINDOW_NORMAL)
@@ -74,7 +98,7 @@ while True:
       EXIT = "0"
 
       if action == UPLOAD_IMG: img = cv.imread("C:/Users/daiko/Desktop/98802d213532114e6aac07121355e7d3.jpg")
-      elif action == WEB_PHOTO: pass
+      elif action == WEB_PHOTO: img = get_image_from_web()
       elif action == EXIT: break
       else: continue
 
