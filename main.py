@@ -1,13 +1,14 @@
 import cv2 as cv
 
-def viewImage(image, name_of_window="Image"):
-    cv.namedWindow(name_of_window, cv.WINDOW_NORMAL)
-    cv.resizeWindow(name_of_window, 800, 500)
-    cv.imshow(name_of_window, image)
-    cv.waitKey(0)
-    cv.destroyAllWindows()
 
-def red(image, name_of_window="Image"):
+def viewImage(image, name_of_window="Image"):
+      cv.namedWindow(name_of_window, cv.WINDOW_NORMAL)
+      cv.resizeWindow(name_of_window, 800, 500)
+      cv.imshow(name_of_window, image)
+      cv.waitKey(0)
+      cv.destroyAllWindows()
+
+def rgb(image):
       print("1) red\n" \
       "2) green \n" \
       "3) blue ")
@@ -47,6 +48,20 @@ def increase_brigthness(image):
       image = cv.convertScaleAbs(img, alpha=2, beta=beta)
       viewImage(image)
 
+def draw_circle(image, name_of_window="Image"):
+      try:
+            print("Введите координаты центра круга")
+            x = int(input("x: "))
+            y = int(input("y: "))
+            rad = int(input("Введите радиус круга: "))
+            if x < 0 or x > 800 or \
+            y < 0 or y > 500 \
+            or rad < 0:
+                  raise ValueError
+      except ValueError:
+            print("smth goes wrong")
+      cv.circle(image, (x, y), rad, (0, 0, 255), 5)
+      viewImage(image)
 
 while True:
       print("1) Загрузить изображение\n" \
@@ -80,7 +95,7 @@ while True:
       if action == SHOW_IMG:
             viewImage(img)
       elif action == SHOW_RGB: 
-            red(img)
+            rgb(img)
       elif action == SHOW_NEG: 
             img = cv.bitwise_not(img)
             viewImage(img)
