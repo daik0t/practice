@@ -23,14 +23,22 @@ class main():
             hint.show()
             cam = cv.VideoCapture(0)
 
-            cv.namedWindow("test")
             img_name = "opencv_frame.png"
-
+            hint = QLabel("Вебка не найдена чтобы решить данную проблему см. README.md")
+            hint.setFont(QFont('Arial', 20))
             while True:
+                  cv.namedWindow("test")
                   ret, frame = cam.read()
                   if not ret:
-                        print("failed to grab frame")
-                        break
+                        if self.v_layout.count() == 3:
+                              self.v_layout.addWidget(hint)
+                        elif self.v_layout.count() == 4:
+                              item = self.v_layout.takeAt(3)
+                              widget = item.widget()
+                              widget.deleteLater()
+                              self.v_layout.addWidget(hint)
+                              
+                        return
                   cv.imshow("test", frame)
 
                   k = cv.waitKey(1)
@@ -113,9 +121,21 @@ class main():
             bytes = bytearray(file.read())
             numpyarray = numpy.asarray(bytes, dtype=numpy.uint8)
             self.img = cv.imdecode(numpyarray, cv.IMREAD_UNCHANGED)
+            hint = QLabel("Фото не загрузилось")
+            hint.setFont(QFont('Arial', 20))
+            if self.img is None:
+                  if self.v_layout.count() == 3:
+                        self.v_layout.addWidget(hint)
+                  elif self.v_layout.count() == 4:
+                        item = self.v_layout.takeAt(3)
+                        widget = item.widget()
+                        widget.deleteLater()
+                        self.v_layout.addWidget(hint)
+                  return
             self.second_buttons()
 
       def clear_layout(self):
+            cv.destroyAllWindows()
             if self.v_layout is not None:
                   while self.v_layout.count():
                         item = self.v_layout.takeAt(0)
