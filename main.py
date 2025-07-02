@@ -64,25 +64,27 @@ class main():
       def rgb(self):
             
             choise = QWidget()
-            temp = self.img
-
+            temp = self.img.copy()
             def red_ch():
                   self.img[:, :, 0] = 0
                   self.img[:, :, 1] = 0
                   self.viewImage()
                   choise.close()
+                  self.img = temp.copy()
             
             def blue_ch():
                   self.img[:, :, 1] = 0
                   self.img[:, :, 2] = 0
                   self.viewImage()
                   choise.close()
+                  self.img = temp.copy()
                                     
             def green_ch():
                   self.img[:, :, 0] = 0
                   self.img[:, :, 2] = 0
                   self.viewImage()
                   choise.close()
+                  self.img = temp.copy()
 
             h_layout = QHBoxLayout(choise)
             red = QPushButton("Красный канал")
@@ -98,8 +100,10 @@ class main():
             choise.show()
 
       def negative(self):
+            temp = self.img.copy()
             self.img = cv.bitwise_not(self.img)
             self.viewImage()
+            self.img = temp.copy()
 
       def increase_brigthness(self):
             beta, ok = QInputDialog.getInt(QWidget(), "Чило хочу", "Введите на сколько хотите повысить яроксть: ", 0, 0)
@@ -117,12 +121,23 @@ class main():
 
       def read_file(self):
             temp = QFileDialog.getOpenFileName()
+            print(temp[0])
+            
+            hint = QLabel("Фото не загрузилось")
+            hint.setFont(QFont('Arial', 20))
+            if temp[0] == "":
+                  if self.v_layout.count() == 3:
+                        self.v_layout.addWidget(hint)
+                  elif self.v_layout.count() == 4:
+                        item = self.v_layout.takeAt(3)
+                        widget = item.widget()
+                        widget.deleteLater()
+                        self.v_layout.addWidget(hint)
+                  return
             file = open(temp[0], "rb")
             bytes = bytearray(file.read())
             numpyarray = numpy.asarray(bytes, dtype=numpy.uint8)
             self.img = cv.imdecode(numpyarray, cv.IMREAD_UNCHANGED)
-            hint = QLabel("Фото не загрузилось")
-            hint.setFont(QFont('Arial', 20))
             if self.img is None:
                   if self.v_layout.count() == 3:
                         self.v_layout.addWidget(hint)
